@@ -17,6 +17,9 @@ This will take about 2-3 Minutes and the final screen will display a button
 with the port number `8080` displayed on it. This will open the SENAITE site
 in the webbrower.
 
+NOTE: If the link to port `8080` is not displayed on the site, you have to click
+      the **OPEN PORT** button and enter `8080` in there.
+
 It might be that this site will not load immediately, because the server is
 still in startup process. Please wait and reload until the SENAITE site appears.
 
@@ -40,13 +43,13 @@ Build and start the latest SENAITE container, based on [Debian](https://www.debi
 
 ```bash
 $ git clone https://github.com/senaite/senaite.docker
-$ cd senaite.docker/2.2.0
+$ cd senaite.docker/2.4.0
 $ docker build -t senaite .
 $ docker run --rm --name senaite -p 8080:8080 senaite
 ```
 
-This image exposes the TCP Port `8080` via `EXPOSE 8080`, so standard container
-linking will make it automatically available to the linked containers.
+The `-p 8080:8080` parameter will link port `8080` to the internal container
+port where SENAITE is listening.
 
 Now you can add a SENAITE Site at http://localhost:8080 - default user and
 password are **`admin/admin`**.
@@ -134,16 +137,16 @@ image on docker hub.
 Copy an existing version structure:
 
 ```console
-$ cp -r 2.1.0 2.2.0
-$ cd 2.2.0
-$ docker build --tag=senaite:v2.2.0 .
+$ cp -r 2.3.0 2.4.0
+$ cd 2.4.0
+$ docker build --tag=senaite:v2.4.0 .
 
 [...]
 Successfully built 7af3395db8f6
-Successfully tagged senaite:v2.2.0
+Successfully tagged senaite:v2.4.0
 ```
 
-Note that the the image will automatically tagged as `v2.2.0`.
+Note that the the image will automatically tagged as `v2.4.0`.
 
              
 ### Run the container
@@ -151,7 +154,7 @@ Note that the the image will automatically tagged as `v2.2.0`.
 Start a container based on your new image:
 
 ```
-docker container run --publish 9999:8080 --detach --name senaite senaite:v2.2.0
+docker container run --publish 9999:8080 --detach --name senaite senaite:v2.4.0
 ```
 
 We used a couple of common flags here:
@@ -171,29 +174,34 @@ We used a couple of common flags here:
 
 $ docker container ls
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                             PORTS                    NAMES
-ecf514d717ba        senaite:v2.2.0      "/docker-entrypoint.…"   26 seconds ago      Up 24 seconds (health: starting)   0.0.0.0:9999->8080/tcp   s210
+ecf514d717ba        senaite:v2.4.0      "/docker-entrypoint.…"   26 seconds ago      Up 24 seconds (health: starting)   0.0.0.0:9999->8080/tcp   senaite
 ```
 
 Go to http://localhost:9999 to install senaite.
 
-Stop the container with `docker container stop s210`.
+Stop the container with `docker container stop senaite`.
 
 
 ### Publish the container on Docker Hub
 
 Images must be namespaced correctly to share on Docker Hub. Specifically, images
 must be named like `<Docker Hub ID>/<Repository Name>:<tag>.` We can relabel our
-`senaite:2.2.0` image like this:
+`senaite:2.4.0` image like this:
 
 ```console
-$ docker image tag senaite:v2.2.0 senaite/senaite:v2.2.0
+$ docker image tag senaite:v2.4.0 senaite/senaite:v2.4.0
 ```
 
 Finally, push the image to Docker Hub:
 
 ```console
-docker image push senaite/senaite:v2.2.0
+docker image push senaite/senaite:v2.4.0
 ```
+
+### Update the PWD stack
+
+After each new release, the PWD configuration needs to be adapted to the latest version.
+Open `stack.yml` and update the image versions to the new released version.
 
 ### Further information
 
